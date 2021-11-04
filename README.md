@@ -1,52 +1,424 @@
-# Week_7_Assignment
-## week-07_group_activity
-### 1. Create an account on lucidchart.com and create an ERD diagram for the following scenario:
-### A grocery store owner would like to store all their data in a database. Some importan facts you need to include are
-### 1) The owner has multiple stores
-### 2) The owner has multiple employees and the managers report to him, but all other employees report to store managers
-### 3) The store has a membership program, but not all customers need to be members
+### 1.Create a new column called “status” in the rental table that uses a case statement to indicate if a film was returned late, early, or on time. 
+
+STEP1. To create a new column within the rental table we can use ALTER TABLE with name and add the column name as status and then update the 
+       rental table by set statement and case statement to indicate if a film was returned Early, Late and On time.
+
+STEP2. Tables we need film >inventory>rental 
+
+STEP3. key to join film >inventory is by(film_id), key for inventory>rental is by(inventory_id).
+
+STEP4. GROUP BY title and status, then ORDER BY status to get a new column as status.
+
+#### Below is the query I used to answer the question-1:
+
+ALTER TABLE rental
+
+ADD status varchar(20);
+
+UPDATE rental
+
+SET status =
+
+CASE WHEN DATE_PART('day', return_date - rental_date) < rental_duration THEN 'Early Return' 
+  
+WHEN DATE_PART('day', return_date - rental_date) = rental_duration THEN 'On time'
+     
+ELSE 'Late Return' END 
+     
+FROM film;
+
+SELECT
+
+f.title,
+  
+r.status
+  
+FROM film AS f
+
+INNER JOIN inventory AS i
+
+ON f.film_id = i.film_id
+
+INNER JOIN rental AS r
+
+ON i.inventory_id = r.inventory_id
+
+GROUP BY r.status, f.title
+
+ORDER BY r.status;
+
+    
+### 2.Show the total payment amounts for people who live in Kansas City or Saint Louis
+
+STEP1. Tables we need customor>address>city>payment 
+
+STEP2. I found key to join customor>address is by(address_id), key for address>city 
+		 is by(city_id) and key to join city>payment tables by(customer_id) .
+     
+STEP3. To find the total payment amounts for people who live in Kansas City or Saint Louis, use the WHERE clause in city.
+
+STEP4. Using GROUP BY customer_name, city_id and city will get the required information.
+
+STEP5. Finally using the select statement i mentioned all the fields that i need to get in output.
+
+#### Below is the query I used to answer the question-2:
+
+SELECT concat(c.first_name, ' ', c.last_name) AS customer_name, cy.city_id, city, SUM(amount) AS total_payment
+
+FROM customer AS c
+
+INNER JOIN address AS a
+
+ON c.address_id = a.address_id
+
+INNER JOIN city AS cy
+
+ON a.city_id = cy.city_id
+
+INNER JOIN payment AS p
+
+ON c.customer_id = p.customer_id
+
+WHERE cy.city IN ('Saint Louis', 'Kansas City')
+
+GROUP BY customer_name, cy.city_id, city;    
+
+### 3.How many films are in each category? Why do you think there is a table for category and a table for film category?
+
+STEP1. Tables we need category>film_category
+
+STEP2. I found key to join category>film_category is by(category_id).
+
+STEP3. using the select statement to get the COUNT(film_id) AS number of films and the category of films.
+
+STEP4. Using GROUP BY category and ORDER BY number of films will get the output. 
+
+#### Below is the query I used to answer the question-3:
+
+SELECT COUNT(fc.film_id) AS num_films, c.name AS category
+
+FROM category AS c
+
+INNER JOIN film_category AS fc
+
+ON c.category_id = fc.category_id
+
+GROUP BY category
+
+ORDER BY num_films;
+
+AS per my observation, film_category serves as a link between film and category tables. we can use the columns film_id and 
+category_id to join the film table and category tables respectively.
+
+### 4.Show a roster for the staff that includes their email, address, city, and country (not ids)
+
+STEP1. Tables we need staff>address>city>country
+
+STEP2. The key to join staff>address by(address_id), key to join address>city by(city_id), key to join city>country by(country_id).
+
+STEP3. With the SELECT statement select all the fields that we want for the staff in our output.
+
+#### Below is the query I used to answer the question-4:
+
+SELECT first_name, last_name, email, address, city, cu.country
+
+FROM staff AS s
+
+INNER JOIN address AS a
+
+ON s.address_id = a.address_id
+
+INNER JOIN city AS c
+
+ON a.city_id = c.city_id
+
+INNER JOIN country AS cu
+
+ON c.country_id = cu.country_id;
+
+### 5.Show the film_id, title, and length for the movies that were returned from May 15 to 31, 2005
+
+STEP1. Tables we need film>inventory>rental
+
+STEP2. SELECT the fields that we need in output
+
+STEP3. The key to join film>inventory by(film_id), key to join inventory>rental by(inventory_id)
+
+STEP4. Using WHERE clause will get all the return_dates from May 15 to 31, 2005
+
+STEP5. GROUP BY film_id and return_date then, ORDER BY return_date to get the return dates of the movies. 
+
+#### Below is the query I used to answer the question-5:
+
+SELECT f.film_id, f.title, f.length, r.return_date
+
+FROM film AS f
+
+INNER JOIN inventory AS i
+
+ON f.film_id = i.film_id
+
+INNER JOIN rental AS r
+
+ON i.inventory_id = r.inventory_id
+
+WHERE return_date BETWEEN '2005-05-15' AND '2005-05-31'
+
+GROUP BY f.film_id, r.return_date
+
+ORDER BY return_date ASC;
+ 
+
+### 6.Write a subquery to show which movies are rented below the average price for all movies.
+
+STEP1. SELECT the required fields from the film table.
+
+STEP2. Here, we use a subquery in the where clause, and the purpose is to display the average rental rate of the movies and filtering out the ones which are less than the rental rate.
+
+#### Below is the query I used to answer the question-6:
+
+SELECT title, rental_rate
+
+FROM film
+
+WHERE rental_rate <
+
+(SELECT AVG(rental_rate)
+  
+ FROM film);
+
+### 7.Write a join statement to show which movies are rented below the average price for all movies.
+
+STEP1. SELECT the average price for all movies using the aggregate function AVG with rental rate to get avg price.
+
+STEP2. SELECT the fields that we need in output from the film table.
+
+STEP3. Using CROSS JOIN, join f1 and f2.
+
+STEP4. Use the GROUP BY statement with title and film_id then, HAVING clause is applied on rental rate and average price, 
+	     filtering out the rows that don't match the specified conditions, finally, ORDER BY film_id to get the rental_rate and avg price for all the movies.
+
+#### Below is the query I used to answer the question-7:
+
+SELECT f2.film_id, f2.title, f2.rental_rate, AVG(f1.rental_rate) AS avg_price
+
+FROM film AS f1
+
+CROSS JOIN film AS f2
+
+GROUP BY f2.film_id, f2.title
+
+HAVING f2.rental_rate < AVG(f1.rental_rate)
+
+ORDER BY film_id;
+
+### 8.Perform an explain plan on 6 and 7, and describe what you’re seeing and important ways they differ
+
+The EXPLAIN keyword, in SQL gives the description of how the queries are executed by the databases. 
+
+It is used to get all the information about the SQL query.
+
+It is used in the beginning of th query, before the SELECT statement. 
+
+By using EXPLAIN, we can get the details of its execution step by step, instead of usual result output.
+
+When we use EXPLAIN with ANALYZE option, the query is executed and timing information was captured (actual time=0.386..0.636 rows=341 loops=1)
+means that the index scan was executed 1 time (the loops value), that it returned 341 rows, and that the actual time was 0.372..0.594.
+
+They differ in Actual time, Planning time and Execution time, where it is less for subquery when compared to join.
+
+#### Below is the query I used to answer the question-8(a):
+
+STEP1. SELECT the required fields from the film table.
+
+STEP2. Here, we use a subquery in the where clause, and the purpose is to display the average rental rate of the movies and filtering out the ones which are less than the rental rate.
+
+EXPLAIN 
+
+SELECT title, rental_rate
+
+FROM film
+
+WHERE rental_rate <
+
+(SELECT AVG(rental_rate)
+  
+FROM film);
+  
+  #### QUERY PLAN
+  
+"Seq Scan on film  (cost=66.51..133.01 rows=333 width=21)"
+
+"  Filter: (rental_rate < $0)"
+
+"  InitPlan 1 (returns $0)"
+
+"    ->  Aggregate  (cost=66.50..66.51 rows=1 width=32)"
+
+"          ->  Seq Scan on film film_1  (cost=0.00..64.00 rows=1000 width=6)"
+
+#### Below is the query I used to answer the question-8(b):
+
+STEP1. SELECT the average price for all movies using the aggregate function AVG with rental rate to get avg price.
+
+STEP2. SELECT the fields that we need in output from the film table.
+
+STEP3. Using CROSS JOIN, join f1 and f2.
+
+STEP4. Use the GROUP BY statement with title and film_id then, HAVING clause is applied on rental rate and average price, 
+	     filtering out the rows that don't match the specified conditions, finally, ORDER BY film_id to get the rental_rate and avg price for all the movies.
+       
+       
+EXPLAIN 
+
+SELECT f2.film_id, f2.title, f2.rental_rate, AVG(f1.rental_rate) AS avg_price
+
+FROM film AS f1
+
+CROSS JOIN film AS f2
+
+GROUP BY f2.film_id, f2.title
+
+HAVING f2.rental_rate < AVG(f1.rental_rate)
+
+ORDER BY film_id;
+
+ #### QUERY PLAN
+
+"Sort  (cost=22662.78..22663.62 rows=333 width=61)"
+
+"  Sort Key: f2.film_id"
+
+"  ->  HashAggregate  (cost=22630.50..22648.83 rows=333 width=61)"
+
+"        Group Key: f2.film_id, f1.release_year"
+
+"        Filter: (f2.rental_rate < avg(f1.rental_rate))"
+
+"        ->  Nested Loop  (cost=0.00..12630.50 rows=1000000 width=35)"
+
+"              ->  Seq Scan on film f1  (cost=0.00..64.00 rows=1000 width=10)"
+
+"              ->  Materialize  (cost=0.00..69.00 rows=1000 width=25)"
+
+"                    ->  Seq Scan on film f2  (cost=0.00..64.00 rows=1000 width=25)"
 
 
-![](group_hw/store_data.png)
+### 9.With a window function, write a query that shows the film, its duration, and what percentile the duration fits into. 
 
-### 2. With your group, create a list of at least 5 and no more than 10 ways data can be “dirty”. Perhaps think back to some data sets we have used that have had weird stuff in them. Discuss how you would resolve each of these and briefly explain.
 
-Dirty data is simply the missing, duplicated or inaccurate data.
+In SQL, window functions are used to perform calculations, similar to aggregate functions. But in aggregate functions, rows are grouped into a single output
+row whereas in  window functions the rows retain their separate identities. 
 
-Eg of dirty data: 1) In our jeopardy data, i have found that there are 2 missing values in the 'Answer' column.
-                  2) Also, One more thing that I’ve noticed is that there’s an extra space in the column names
-                  viz., ' Air Date', ' Round', ' Category', ' Value', ' Question', ' Answer'  
-                  
-Oftentimes the source data comes with duplicate records and we need to remove such duplicates to
-avoid data redundancy as our analysis with duplicates could lead to misleading insights.
+we can use window functions to identify what percentile a given row falls into. The syntax is NTILE().
+In this case, ORDER BY determines which column to use to determine the percentile.
 
-Data which is incorrectly punctuated or incorrectly spelled are also common occurence of dirty data.
 
-Incomplete data, where important fields on data records are left blank.This is one of the most common occurrence of dirty data.
+#### Below is the query I used to answer the question-9:
 
-Inconsistent data i.e.,same field values are stored in different places.
+ SELECT title AS film, length,
+ 
+ NTILE(100) OVER (ORDER BY length)
+       
+ AS percentile_duration
+         
+ FROM film
+  
+ ORDER BY percentile_duration DESC;
+ 
+ 
+ ### 10.	In under 100 words, explain what the difference is between set-based and procedural programming. Be sure to specify which sql and python are.
+ 
+In SQL Server, we have an equivalent language called T-SQL, also known as Transact SQL. Any user defined function or cursor that executes on a result set 
+row by row is a procedural approach. Cursors are especially useful for applications that need to process one row at a time. 
 
-We certainly have some ways to resolve this issue to get clean data,
+Procedural programming is a "programmatic approach" that is used to work in our daily programming life. 
+In this we tell the system 'what to do' along with 'how to do' it. 
+we write a query, use the data operations and manipulate with logical conditions using loops, conditions and then process the statements to produce final result.
+For example, when we are querying the database to get a result set and using cursor to navigate the result set to do further processing row by row, then we are using a procedural approach.
 
-Data cleaning means to refine the raw or source data that is collected to render it to be 
-leveraged for Data analysis to facilitate in retrieving meaningful insights and abstract visualizations.
+Set Based approach, actually allows us specify "what to do", but it does not let us specify "how to do". For instance,we specify our requirement for
+processed result which has to be obtained from a set of data like a table, joins of table.
 
-Before we make any changes to our data, make a copy or backup of the data.
+For example:
+SELECT f.film_id, f.title, f.length, r.return_date
 
--Identify and remove the duplicate data 
+FROM film AS f
 
--Identify and fix the issues with spaces and spelling
+INNER JOIN inventory AS i
 
--Fix the issues with missing data, for example in numerical data by setting a value to zero, or setting a word 'missing' for character data.
+ON f.film_id = i.film_id
 
--Normalizing the data, for example if the data has a number make sure it is a number. often imes will see 'five' instead of 5 or a blank instead if 0.
+INNER JOIN rental as r
 
-### 3. Look at the requirements for the exploratory data analysis project. List at least 2 APIs thathave data interesting to you. Please pick at least one API that’s not listed in the project instructions.
+ON i.inventory_id = r.inventory_id
 
-3a) From the list of APIs provided by you, i would like to choose: Quandl stock/finacila api.  
-Quandl stock/financial API - https://www.quandl.com/tools/api
+WHERE return_date BETWEEN '2005-05-15' AND '2005-05-31'
 
-3b) Based upon my interest, i am planning to opt the below api for Zillow real estate data.
-Real Estate Data, Mortgage Data, API|Zillow - https://www.zillow.com/howto/api/APIOverview.htm
+GROUP BY f.film_id, r.return_date
 
+ORDER BY return_date ASC;
+ 
+In the above SQL, "film AS f INNER JOIN inventory AS i, ON f.film_id = i.film_id INNER JOIN rental AS r, ON i.inventory_id = r.inventory_id" is the "set" of 
+data from where film_id, film_title and length for the movies that were returned from May 15 to 31, 2005 were displayed.
+we just have to specify our requirements and conditions, and the SQL engine does the rest to produce the result.
+
+#### Be sure to specify which sql and python are
+SQL is a very simple, yet powerful language and SQL is a non-procedral language. 
+SQL is a set-oriented language, based on the mathematical theory of sets.
+whereas Python support both Object Oriented and Procedural Programming language. 
+
+### In the readme, explain what autoincrementing is. Also explain the difference between creating a join and a subquery. This section should be less than 300 words.
+
+Auto-increment allows a unique number to be generated automatically for every new record inserted into a table.
+
+The Auto Increment feature is supported by all the Databases like SQL Server, MYSQL, PostgreSQL, MS Access, and Oracle.
+
+For different databases, we have different keywords that are set for the Auto Increment feature. 
+
+In PostgreSQL, SERIAL is the keyword used for auto incrementing, whereas in MS Access, AUTOINCREMENT is the keyword and in SQL Server, IDENTITY keyword is used for auto increment feature.
+
+By default, the AUTOINCREMENT starts with 1 and increases by 1.
+
+#### The difference between creating a join and a subquery
+
+SUBQUERIES AND JOINS both are used to combine the data from different tables into a single result and they may even share the same query plan.
+
+SUBQUERY: A subquery is a query nested inside another query. 
+
+For instance, we can use a subquery to get the movies that are rented below the average price.
+
+SELECT title, rental_rate
+
+FROM film
+
+WHERE rental_rate <
+
+(SELECT AVG(rental_rate)
+
+FROM film);
+
+In this example, we have a subquery in the where clause, the purpose is to display the average rental rate of the movies and filtering out the ones which are less than the rental rate.
+
+In SQL, JOINS main purpose is to combine(join) one or more tables in a relational database based on the match condition. An INNER JOIN is also denoted as just JOIN in SQL, 
+which keeps only the records in which the key fields are in both tables.
+
+The main difference between creating a join and a subquery:
+
+1. Subqueries can be used to return either a scalar (single) value or a row set. whereas joins are used to return rows.
+
+2. A subquery can be placed in any part of your query, such as the SELECT, FROM, WHERE, or GROUP BY clause. Whereas JOINS are used in the FROM clause of the WHERE statement.
+ 
+3. The main purpose of the JOIN is to combine rows from one or more tables based on a match condition. The combined row set is then available by the SELECT statement for use to   display, filter, or group by the columns. Whereas the subquery is returning a single value which is then used to filter out products.
+
+
+### SQL in DataCamp
+
+
+![](Week_7_Assignment/tree/main/.imagekeep/Joining_Data_SQL.PNG)
+
+![](.imagekeep/Joining_Data_SQL.PNG)
+
+
+![](.imagekeep/Intermediate_SQL.PNG)
 
