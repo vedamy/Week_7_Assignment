@@ -327,43 +327,12 @@ In this case, ORDER BY determines which column to use to determine the percentil
  ORDER BY percentile_duration DESC;
  
  
- ### 10.	In under 100 words, explain what the difference is between set-based and procedural programming. Be sure to specify which sql and python are.
- 
-In SQL Server, we have an equivalent language called T-SQL, also known as Transact SQL. Any user defined function or cursor that executes on a result set 
-row by row is a procedural approach. Cursors are especially useful for applications that need to process one row at a time. 
+ ### 10.In under 100 words, explain what the difference is between set-based and procedural programming. Be sure to specify which sql and python are.
 
-Procedural programming is a "programmatic approach" that is used to work in our daily programming life. 
-In this we tell the system 'what to do' along with 'how to do' it. 
-we write a query, use the data operations and manipulate with logical conditions using loops, conditions and then process the statements to produce final result.
-For example, when we are querying the database to get a result set and using cursor to navigate the result set to do further processing row by row, then we are using a procedural approach.
+Procedural programming is a "programmatic approach" that is used Python. In this approach we perform tasks in elementwise fashion. 
+For instance, we use query, to perform data operations and manipulate using loops, conditions and then process the statements to give final result.
+Set Based approach, actually allows us specify our requirement for processed result which has to be obtained from a set of data like a table, joins of table.
 
-Set Based approach, actually allows us specify "what to do", but it does not let us specify "how to do". For instance,we specify our requirement for
-processed result which has to be obtained from a set of data like a table, joins of table.
-
-For example:
-SELECT f.film_id, f.title, f.length, r.return_date
-
-FROM film AS f
-
-INNER JOIN inventory AS i
-
-ON f.film_id = i.film_id
-
-INNER JOIN rental as r
-
-ON i.inventory_id = r.inventory_id
-
-WHERE return_date BETWEEN '2005-05-15' AND '2005-05-31'
-
-GROUP BY f.film_id, r.return_date
-
-ORDER BY return_date ASC;
- 
-In the above SQL, "film AS f INNER JOIN inventory AS i, ON f.film_id = i.film_id INNER JOIN rental AS r, ON i.inventory_id = r.inventory_id" is the "set" of 
-data from where film_id, film_title and length for the movies that were returned from May 15 to 31, 2005 were displayed.
-we just have to specify our requirements and conditions, and the SQL engine does the rest to produce the result.
-
-#### Be sure to specify which sql and python are
 SQL is a very simple, yet powerful language and its a non-procedral language. 
 We call SQL as a set-oriented language, as it is based on the mathematical theory of sets.
 whereas Python support both Object Oriented and Procedural Programming language. 
@@ -378,17 +347,8 @@ In PostgreSQL, SERIAL is the keyword used for auto incrementing, whereas in MS A
 
 #### The difference between creating a join and a subquery
 
-In SQL, JOINS are used to combine one or more tables based on the match condition, and subquery is a query written inside another query that is we call it as nested query
-
-The main difference between creating a join and a subquery:
-
-1. Subqueries are used to return either a single (scalar) value or a row set. whereas joins are used to return rows.
-
-2. A subquery can fit in any part of your query, such as the SELECT, FROM, WHERE, or GROUP BY clause. Whereas JOINS are used with FROM clause of the WHERE statement.
+In SQL, JOINS are used to combine one or more tables based on the match condition, and subquery is a query written inside another query that is we call it as nested query Subqueries are used to return either a single value or a row set. whereas joins are used to return rows. subquery can fit in any part of your query, such as the SELECT, FROM, WHERE, or GROUP BY clause. Whereas JOINS are used with FROM clause of the WHERE statement.
  
-3. The main purpose of the JOIN is to combine rows from one or more tables based on a match condition. The combined row set is then available by the SELECT statement for use to   display, filter, or group by the columns. Whereas the subquery is returning a single value which is then used to filter out products.
-
-
 ### SQL in DataCamp
 
 
