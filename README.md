@@ -364,50 +364,27 @@ data from where film_id, film_title and length for the movies that were returned
 we just have to specify our requirements and conditions, and the SQL engine does the rest to produce the result.
 
 #### Be sure to specify which sql and python are
-SQL is a very simple, yet powerful language and SQL is a non-procedral language. 
-SQL is a set-oriented language, based on the mathematical theory of sets.
+SQL is a very simple, yet powerful language and its a non-procedral language. 
+We call SQL as a set-oriented language, as it is based on the mathematical theory of sets.
 whereas Python support both Object Oriented and Procedural Programming language. 
 
 ### In the readme, explain what autoincrementing is. Also explain the difference between creating a join and a subquery. This section should be less than 300 words.
 
-Auto-increment allows a unique number to be generated automatically for every new record inserted into a table.
-
-The Auto Increment feature is supported by all the Databases like SQL Server, MYSQL, PostgreSQL, MS Access, and Oracle.
+Auto incrementing is nothing but, generating a uniue number for every new record. By default the starting value is one and it will increment by one, but we can set our starting value as required, this feature is supported by all the Databases like SQL Server, MYSQL, PostgreSQL, MS Access, and Oracle.
 
 For different databases, we have different keywords that are set for the Auto Increment feature. 
 
-In PostgreSQL, SERIAL is the keyword used for auto incrementing, whereas in MS Access, AUTOINCREMENT is the keyword and in SQL Server, IDENTITY keyword is used for auto increment feature.
-
-By default, the AUTOINCREMENT starts with 1 and increases by 1.
+In PostgreSQL, SERIAL is the keyword used for auto incrementing, whereas in MS Access, AUTOINCREMENT is the keyword and in SQL Server, IDENTITY keyword is used.
 
 #### The difference between creating a join and a subquery
 
-SUBQUERIES AND JOINS both are used to combine the data from different tables into a single result and they may even share the same query plan.
-
-SUBQUERY: A subquery is a query nested inside another query. 
-
-For instance, we can use a subquery to get the movies that are rented below the average price.
-
-SELECT title, rental_rate
-
-FROM film
-
-WHERE rental_rate <
-
-(SELECT AVG(rental_rate)
-
-FROM film);
-
-In this example, we have a subquery in the where clause, the purpose is to display the average rental rate of the movies and filtering out the ones which are less than the rental rate.
-
-In SQL, JOINS main purpose is to combine(join) one or more tables in a relational database based on the match condition. An INNER JOIN is also denoted as just JOIN in SQL, 
-which keeps only the records in which the key fields are in both tables.
+In SQL, JOINS are used to combine one or more tables based on the match condition, and subquery is a query written inside another query that is we call it as nested query
 
 The main difference between creating a join and a subquery:
 
-1. Subqueries can be used to return either a scalar (single) value or a row set. whereas joins are used to return rows.
+1. Subqueries are used to return either a single (scalar) value or a row set. whereas joins are used to return rows.
 
-2. A subquery can be placed in any part of your query, such as the SELECT, FROM, WHERE, or GROUP BY clause. Whereas JOINS are used in the FROM clause of the WHERE statement.
+2. A subquery can fit in any part of your query, such as the SELECT, FROM, WHERE, or GROUP BY clause. Whereas JOINS are used with FROM clause of the WHERE statement.
  
 3. The main purpose of the JOIN is to combine rows from one or more tables based on a match condition. The combined row set is then available by the SELECT statement for use to   display, filter, or group by the columns. Whereas the subquery is returning a single value which is then used to filter out products.
 
